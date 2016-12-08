@@ -10,6 +10,7 @@
 
 void test_Z_piece_coords()
 {
+  INFO("--testing Z piece coords");
 ts_Coord coord = {rand() % 10, rand() % 10};
 ts_Coord coords[16] = {0};
 
@@ -31,6 +32,7 @@ ts_Coord coords[16] = {0};
 
 void test_piece_initial_values()
 {
+  INFO("--testing piece default values");
   ts_Piece *piece = ts_Piece_new(Z);
   ASSERT_EQUAL(piece->rotation, 0);
   ASSERT_EQUAL(piece->position.y, 0);
@@ -60,6 +62,7 @@ void assert_timeval_subtract_result(struct timeval x, struct timeval y, struct t
 
 void test_timeval_subtract()
 {
+  INFO("--testing timeval subtraction");
   assert_timeval_subtract_result(
     (struct timeval) {3, 1000},
     (struct timeval) {2, 3000},
@@ -103,10 +106,85 @@ void test_timeval_subtract()
   );
 }
 
+void test_game_border_coords()
+{
+  INFO("--testing game border coords");
+int w = 10 + rand()%10,
+    h = 10 + rand()%10,
+    len = h*2+w*2;
+ts_Coord coords[h*2 + w*2];
+ts_Game *game = ts_Game_new(w, h);
+
+  ts_Game_getBottomBorderCoords(game, coords, len);
+  for(int i = 0; i < w; i++)
+  {
+    ASSERT_EQUAL(h, coords[i].y);
+    ASSERT_EQUAL(i, coords[i].x);
+  }
+
+  ts_Game_destroy(game);
+}
+
+void test_coord_collision()
+{
+  ASSERT_EQUAL(
+      true,
+      ts_Coord_downCollision(
+        &(ts_Coord){0,1},
+        &(ts_Coord){1,1}
+      )
+  );
+
+  ASSERT_EQUAL(
+      false,
+      ts_Coord_downCollision(
+        &(ts_Coord){0,0},
+        &(ts_Coord){0,1}
+      )
+  );
+
+  ASSERT_EQUAL(
+      false,
+      ts_Coord_downCollision(
+        &(ts_Coord){0,1},
+        &(ts_Coord){2,1}
+      )
+  );
+}
+
+void test_game_piece_collision()
+{
+INFO("--Testing game piece collision");
+  int w = 20, h = 20;
+  ts_Game *game = ts_Game_new(w,h);
+  game->piece = ts_Piece_new(J);
+
+  ts_Piece_setposition(game->piece, (ts_Coord){17, 10});
+
+  INFO("  Expecting down collision");
+  ASSERT_EQUAL(
+      true,
+      ts_Game_pieceCollision(game)
+      );
+
+  ts_Piece_setposition(game->piece, (ts_Coord){15, 10});
+
+  INFO("  Expecting no down collision");
+  ASSERT_EQUAL(
+      false,
+      ts_Game_pieceCollision(game)
+      );
+
+  ts_Game_destroy(game);
+}
+
 int main()
 {
   test_piece_initial_values();
   test_Z_piece_coords();
   test_timeval_subtract();
+  test_game_border_coords();
+  test_coord_collision();
+  test_game_piece_collision();
   return 0;
 }

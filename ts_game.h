@@ -22,5 +22,7 @@ ts_Game *ts_Game_new(uint8_t width, uint8_t height);
 void ts_Game_destroy(ts_Game *);
 void ts_Game_move(ts_Game *);
 void ts_Game_draw(ts_Game *, ts_Game_drawfn);
+void ts_Game_getBottomBorderCoords(ts_Game *, ts_Coord *, uint8_t length);
+bool ts_Game_pieceCollision(ts_Game *game);
 
 #endif

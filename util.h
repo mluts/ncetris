@@ -3,8 +3,10 @@
 
 #include <time.h>
 #include <sys/time.h>
+#include <stdio.h>
 
 #define MILLION 1000000
+#define INFO(msg) fprintf(stdout, "INFO: %s:%d:%s %s\n", __FILE__,__LINE__,__func__,msg);
 
 int timeval_subtract(
     const struct timeval *x,
