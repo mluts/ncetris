@@ -11,8 +11,7 @@ void test_Z_piece_coords()
 ts_Coord coord = {rand() % 10, rand() % 10};
 ts_Coord coords[16] = {0};
 
-  ts_Piece *piece = ts_Piece_new();
-  ts_Piece_setshape(piece, Z);
+  ts_Piece *piece = ts_Piece_new(Z);
   ts_Piece_setposition(piece, coord);
   ts_Piece_getcoords(piece, coords, 16);
 
@@ -30,7 +29,7 @@ ts_Coord coords[16] = {0};
 
 void test_piece_initial_values()
 {
-  ts_Piece *piece = ts_Piece_new();
+  ts_Piece *piece = ts_Piece_new(Z);
   ASSERT_EQUAL(piece->rotation, 0);
   ASSERT_EQUAL(piece->position.y, 0);
   ASSERT_EQUAL(piece->position.x, 0);

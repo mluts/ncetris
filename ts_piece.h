@@ -15,10 +15,12 @@ typedef struct {
   uint8_t rotation;
 } ts_Piece;
 
-ts_Piece *ts_Piece_new();
+typedef void (*ts_Piece_drawfn)(uint8_t y, uint8_t x);
+
+ts_Piece *ts_Piece_new(ts_PieceShape);
 void ts_Piece_destroy(ts_Piece *);
-void ts_Piece_setshape(ts_Piece *, ts_PieceShape);
 void ts_Piece_setposition(ts_Piece *, ts_Coord);
-void ts_Piece_getcoords(ts_Piece *, ts_Coord*, uint8_t length);
+int ts_Piece_getcoords(ts_Piece *, ts_Coord*, uint8_t length);
+void ts_Piece_draw(ts_Piece *, ts_Piece_drawfn);
 
 #endif

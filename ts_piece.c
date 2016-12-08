@@ -5,25 +5,22 @@
 #define Y(piece) (piece->position.y)
 #define X(piece) (piece->position.x)
 
-ts_Piece *ts_Piece_new()
+ts_Piece *ts_Piece_new(ts_PieceShape shape)
 {
   ts_Piece *piece = calloc(1, sizeof(ts_Piece));
+  if(piece != NULL) {
+    piece->shape = shape;
+  }
   return piece;
 }
 
 void ts_Piece_destroy(ts_Piece *piece)
 { free(piece); }
 
-void ts_Piece_setshape(ts_Piece *piece, ts_PieceShape shape)
-{
-  piece->shape = shape;
-  piece->rotation = 0;
-}
-
 void ts_Piece_setposition(ts_Piece *piece, const ts_Coord coord)
 { piece->position = coord; }
 
-void J_coords(ts_Piece *piece, ts_Coord *coord, uint8_t length)
+int J_coords(ts_Piece *piece, ts_Coord *coord, uint8_t length)
 {
   /*
    *  #
@@ -86,9 +83,11 @@ void J_coords(ts_Piece *piece, ts_Coord *coord, uint8_t length)
       memcpy(coord, J3, length * sizeof(ts_Coord));
       break;
   }
+
+  return 4;
 }
 
-void Z_coord(ts_Piece *piece, ts_Coord *coord, uint8_t length)
+int Z_coord(ts_Piece *piece, ts_Coord *coord, uint8_t length)
 {
   /*
    * ##
@@ -121,9 +120,11 @@ void Z_coord(ts_Piece *piece, ts_Coord *coord, uint8_t length)
       memcpy(coord, Z1, length * sizeof(ts_Coord));
       break;
   }
+
+  return 4;
 }
 
-void L_coord(ts_Piece *piece, ts_Coord *coord, uint8_t length)
+int L_coord(ts_Piece *piece, ts_Coord *coord, uint8_t length)
 {
   /*
    * #
@@ -185,9 +186,11 @@ void L_coord(ts_Piece *piece, ts_Coord *coord, uint8_t length)
       memcpy(coord, L3, length * sizeof(ts_Coord));
       break;
   }
+
+  return 4;
 }
 
-void S_coord(ts_Piece *piece, ts_Coord *coord, uint8_t length)
+int S_coord(ts_Piece *piece, ts_Coord *coord, uint8_t length)
 {
   /*
    *  ##
@@ -220,9 +223,11 @@ void S_coord(ts_Piece *piece, ts_Coord *coord, uint8_t length)
       memcpy(coord, S1, length * sizeof(ts_Coord));
       break;
   }
+
+  return 4;
 }
 
-void LINE_coord(ts_Piece *piece, ts_Coord *coord, uint8_t length)
+int LINE_coord(ts_Piece *piece, ts_Coord *coord, uint8_t length)
 {
   /*
    * #
@@ -255,9 +260,11 @@ void LINE_coord(ts_Piece *piece, ts_Coord *coord, uint8_t length)
       memcpy(coord, LINE1, length * sizeof(ts_Coord));
       break;
   }
+
+  return 4;
 }
 
-void CUBE_coord(ts_Piece *piece, ts_Coord *coord, uint8_t length)
+int CUBE_coord(ts_Piece *piece, ts_Coord *coord, uint8_t length)
 {
   /*
    * ##
@@ -271,28 +278,40 @@ void CUBE_coord(ts_Piece *piece, ts_Coord *coord, uint8_t length)
   };
 
   memcpy(coord, CUBE, length * sizeof(ts_Coord));
+
+  return 4;
 }
 
-void ts_Piece_getcoords(ts_Piece *piece, ts_Coord *coord, uint8_t length)
+int ts_Piece_getcoords(ts_Piece *piece, ts_Coord *coord, uint8_t length)
 {
   switch(piece->shape) {
     case J:
-      J_coords(piece, coord, length);
+      return J_coords(piece, coord, length);
       break;
     case Z:
-      Z_coord(piece, coord, length);
+      return Z_coord(piece, coord, length);
       break;
     case L:
-      L_coord(piece, coord, length);
+      return L_coord(piece, coord, length);
       break;
     case S:
-      S_coord(piece, coord, length);
+      return S_coord(piece, coord, length);
       break;
     case LINE:
-      LINE_coord(piece, coord, length);
+      return LINE_coord(piece, coord, length);
       break;
     case CUBE:
-      CUBE_coord(piece, coord, length);
+      return CUBE_coord(piece, coord, length);
       break;
   }
+  return 0;
+}
+
+void ts_Piece_draw(ts_Piece *piece, ts_Piece_drawfn fn)
+{
+  int size;
+  ts_Coord coords[16];
+  size = ts_Piece_getcoords(piece, coords, 16);
+  for(int i = 0; i < size; i++)
+  { fn(coords[i].y, coords[i].x); }
 }
