@@ -9,15 +9,34 @@ ts_Game *ts_Game_new(uint8_t w, uint8_t h)
     game->width = w;
     game->height = h;
     game->piece = NULL;
-    game->frozenPieces = calloc(MAX_PIECES, sizeof(void*));
-    game->frozenPiecesCount = 0;
+    game->dots = calloc(w*h, sizeof(uint8_t));
   }
   return game;
 }
 
+/*! Private */
+uint16_t dotindex(ts_Game *game, uint8_t y, uint8_t x)
+{
+  return x + y * game->width;
+}
+
+void ts_Game_setdot(ts_Game *game, uint8_t y, uint8_t x, uint8_t val)
+{
+  game->dots[dotindex(game, y, x)] = val;
+}
+
+uint8_t ts_Game_getdot(ts_Game *game, uint8_t y, uint8_t x)
+{
+  return game->dots[dotindex(game, y, x)];
+}
+
 void ts_Game_freezepiece(ts_Game *game)
 {
-  game->frozenPieces[game->frozenPiecesCount++] = game->piece;
+  ts_Coord coords[16];
+  int size;
+  size = ts_Piece_getcoords(game-> piece, coords, 16);
+  for(int i = 0; i < size; i++)
+    ts_Game_setdot(game, coords[i].y, coords[i].x, 1);
   game->piece = NULL;
 }
 
@@ -31,58 +50,52 @@ void ts_Game_spawnpiece(ts_Game *game)
 
 void ts_Game_destroy(ts_Game *game)
 {
-  free(game->frozenPieces);
+  free(game->dots);
   free(game->piece);
   free(game);
 }
 
 void ts_Game_draw(ts_Game *game, ts_Game_drawfn fn)
 {
-  for(int i = 0; i < game->frozenPiecesCount; i++)
-  { ts_Piece_draw(game->frozenPieces[i], fn); }
+  for(int y = 0; y < game->height; y++)
+    for(int x = 0; x < game->width; x++)
+      if(ts_Game_getdot(game, y, x) > 0)
+        fn(y, x);
 
   if(game->piece != NULL)
-  { ts_Piece_draw(game->piece, fn); }
+    ts_Piece_draw(game->piece, fn);
 }
 
 bool ts_Game_pieceDownCollision(ts_Game *game)
 {
-ts_Coord coords[16],
-         frozenCoords[16],
-         bottomCoords[game->width];
-int size, frozenSize;
+ts_Coord coords[16];
+int size;
 
   if(game->piece == NULL) { return false; }
 
   size = ts_Piece_getcoords(game->piece, coords, 16);
-  ts_Game_getBottomBorderCoords(game, bottomCoords, game->width);
-  if(ts_Coords_downCollision(coords, size, bottomCoords, game->width))
-    return true;
 
-  for(int i = 0; i < game->frozenPiecesCount; i++)
-  {
-    frozenSize = ts_Piece_getcoords(game->frozenPieces[i], frozenCoords, 16);
-    if(ts_Coords_downCollision(coords, size, frozenCoords, frozenSize))
+  for(int i = 0; i < size; i++)
+    if(coords[i].y+1 == game->height ||
+       ts_Game_getdot(game, coords[i].y+1, coords[i].x) > 0)
       return true;
-  }
 
   return false;
 }
 
 bool ts_Game_pieceUpCollision(ts_Game *game)
 {
-ts_Coord coords[16],
-         topCoords[game->width];
+ts_Coord coords[16];
 int size;
 
   if(game->piece == NULL) { return false; }
 
   size = ts_Piece_getcoords(game->piece, coords, 16);
-  ts_Game_getTopBorderCoords(game, topCoords, game->width);
 
-  if(ts_Coords_downCollision(topCoords, game->width, coords, size) &&
-      ts_Game_pieceDownCollision(game))
-    return true;
+  if(ts_Game_pieceDownCollision(game))
+    for(int i = 0; i < size; i++)
+      if(coords[i].y - 1 < 0)
+        return true;
 
   return false;
 }
@@ -109,90 +122,34 @@ void ts_Game_move(ts_Game *game)
   }
 }
 
-void ts_Game_getBottomBorderCoords(ts_Game *game, ts_Coord *coords, uint8_t length)
-{
-int i = 0;
-  for(i = 0; i < game->width && i < length; i++)
-  {
-    coords[i].y = game->height;
-    coords[i].x = i;
-  }
-}
-
-void ts_Game_getTopBorderCoords(ts_Game *game, ts_Coord *coords, uint8_t length)
-{
-int i = 0;
-  for(i = 0; i < game->width && i < length; i++)
-  {
-    coords[i].y = 0;
-    coords[i].x = i;
-  }
-}
-
-void ts_Game_getLeftBorderCoords(ts_Game *game, ts_Coord *coords, uint8_t length)
-{
-int i;
-  for(i = 0; i < game->height && i < length; i++)
-  {
-    coords[i].y = i;
-    coords[i].x = 0;
-  }
-}
-
-void ts_Game_getRightBorderCoords(ts_Game *game, ts_Coord *coords, uint8_t length)
-{
-int i;
-  for(i = 0; i < game->height && i < length; i++)
-  {
-    coords[i].y = i;
-    coords[i].x = game->width;
-  }
-}
-
 bool ts_Game_pieceLeftCollision(ts_Game *game)
 {
-  ts_Coord coord[16],
-           frozenCoords[16],
-           leftCoords[game->height];
-int size, frozenSize;
+  ts_Coord coord[16];
+int size;
 
   if(game->piece == NULL) { return false; }
 
   size = ts_Piece_getcoords(game->piece, coord, 16);
-  ts_Game_getLeftBorderCoords(game, leftCoords, game->height);
-  if(ts_Coords_leftCollision(coord, size, leftCoords, game->height))
-    return true;
-  else
-    for(int i = 0; i < game->frozenPiecesCount; i++)
-    {
-      frozenSize = ts_Piece_getcoords(game->frozenPieces[i], frozenCoords, 16);
-      if(ts_Coords_leftCollision(coord, size, frozenCoords, frozenSize))
-        return true;
-    }
+  for(int i = 0; i < size; i++)
+    if(coord[i].x-1 < 0 ||
+        ts_Game_getdot(game, coord[i].y, coord[i].x-1) > 0)
+      return true;
 
   return false;
 }
 
 bool ts_Game_pieceRightCollision(ts_Game *game)
 {
-  ts_Coord coord[16],
-           frozenCoords[16],
-           rightCoords[game->height];
-int size, frozenSize;
+  ts_Coord coord[16];
+int size;
 
   if(game->piece == NULL) { return false; }
 
   size = ts_Piece_getcoords(game->piece, coord, 16);
-  ts_Game_getRightBorderCoords(game, rightCoords, game->height);
-  if(ts_Coords_leftCollision(rightCoords, game->height, coord, size))
-    return true;
-  else
-    for(int i = 0; i < game->frozenPiecesCount; i++)
-    {
-      frozenSize = ts_Piece_getcoords(game->frozenPieces[i], frozenCoords, 16);
-      if(ts_Coords_leftCollision(frozenCoords, frozenSize, coord, size))
-        return true;
-    }
+  for(int i = 0; i < size; i++)
+    if(coord[i].x+1 >= game->width ||
+        ts_Game_getdot(game, coord[i].y, coord[i].x+1) > 0)
+      return true;
 
   return false;
 }

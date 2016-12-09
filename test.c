@@ -106,25 +106,6 @@ void test_timeval_subtract()
   );
 }
 
-void test_game_border_coords()
-{
-  INFO("--testing game border coords");
-int w = 10 + rand()%10,
-    h = 10 + rand()%10,
-    len = h*2+w*2;
-ts_Coord coords[h*2 + w*2];
-ts_Game *game = ts_Game_new(w, h);
-
-  ts_Game_getBottomBorderCoords(game, coords, len);
-  for(int i = 0; i < w; i++)
-  {
-    ASSERT_EQUAL(h, coords[i].y);
-    ASSERT_EQUAL(i, coords[i].x);
-  }
-
-  ts_Game_destroy(game);
-}
-
 void test_coord_collision()
 {
   ASSERT_EQUAL(
@@ -269,7 +250,6 @@ int main()
   test_Z_piece_coords();
   test_timeval_subtract();
   test_timeval_add();
-  test_game_border_coords();
   test_coord_collision();
   test_game_piece_collision();
   test_piece_rotation();
