@@ -23,6 +23,8 @@ void ts_Game_destroy(ts_Game *);
 void ts_Game_move(ts_Game *);
 void ts_Game_draw(ts_Game *, ts_Game_drawfn);
 void ts_Game_getBottomBorderCoords(ts_Game *, ts_Coord *, uint8_t length);
+void ts_Game_getTopBorderCoords(ts_Game *, ts_Coord *, uint8_t length);
 bool ts_Game_pieceDownCollision(ts_Game *game);
+bool ts_Game_pieceUpCollision(ts_Game *game);
 
 #endif

@@ -69,10 +69,35 @@ int size, frozenSize;
   return false;
 }
 
+bool ts_Game_pieceUpCollision(ts_Game *game)
+{
+ts_Coord coords[16],
+         topCoords[game->width];
+int size;
+
+  if(game->piece == NULL) { return false; }
+
+  size = ts_Piece_getcoords(game->piece, coords, 16);
+  ts_Game_getTopBorderCoords(game, topCoords, game->width);
+
+  if(ts_Coords_downCollision(topCoords, game->width, coords, size) &&
+      ts_Game_pieceDownCollision(game))
+    return true;
+
+  return false;
+}
+
 void ts_Game_move(ts_Game *game)
 {
+  if(game->finished) { return; }
+
   if(game->piece == NULL || ts_Game_pieceDownCollision(game)) {
     ts_Game_spawnpiece(game);
+
+    if(ts_Game_pieceUpCollision(game))
+    {
+      game->finished = true;
+    }
   } else {
     ts_Piece_setposition(
         game->piece,
@@ -90,6 +115,16 @@ int i = 0;
   for(i = 0; i < game->width && i < length; i++)
   {
     coords[i].y = game->height;
+    coords[i].x = i;
+  }
+}
+
+void ts_Game_getTopBorderCoords(ts_Game *game, ts_Coord *coords, uint8_t length)
+{
+int i = 0;
+  for(i = 0; i < game->width && i < length; i++)
+  {
+    coords[i].y = 0;
     coords[i].x = i;
   }
 }
