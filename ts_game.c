@@ -30,6 +30,31 @@ uint8_t ts_Game_getdot(ts_Game *game, uint8_t y, uint8_t x)
   return game->dots[dotindex(game, y, x)];
 }
 
+void ts_Game_remove_row(ts_Game *game, uint8_t y)
+{
+  for(int x = 0; x < game->width; x++)
+    ts_Game_setdot(game, y, x, 0);
+}
+
+void ts_Game_remove_full_rows(ts_Game *game)
+{
+  for(int y = 0; y < game->height; y++)
+  {
+    if(ts_Game_getdot(game, y, 0) == 0)
+      continue;
+    else
+    {
+      bool fullRow = true;
+      for(int x = 0; x < game->width; x++)
+        if(ts_Game_getdot(game, y, x) == 0)
+          fullRow = false;
+
+      if(fullRow == true)
+        ts_Game_remove_row(game, y);
+    }
+  }
+}
+
 void ts_Game_freezepiece(ts_Game *game)
 {
   ts_Coord coords[16];
@@ -105,6 +130,7 @@ void ts_Game_move(ts_Game *game)
   if(game->finished) { return; }
 
   if(game->piece == NULL || ts_Game_pieceDownCollision(game)) {
+    ts_Game_remove_full_rows(game);
     ts_Game_spawnpiece(game);
 
     if(ts_Game_pieceUpCollision(game))
