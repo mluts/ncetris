@@ -1,10 +1,14 @@
 #include "ts_piece.h"
 #include <stdlib.h>
 #include <string.h>
+#include <math.h>
 
 #define Y(piece) (piece->position.y)
 #define X(piece) (piece->position.x)
 
+/*
+ * Initialize new Piece with given shape
+ */
 ts_Piece *ts_Piece_new(ts_PieceShape shape)
 {
   ts_Piece *piece = calloc(1, sizeof(ts_Piece));
@@ -14,9 +18,15 @@ ts_Piece *ts_Piece_new(ts_PieceShape shape)
   return piece;
 }
 
+/*
+ * Free a piece
+ */
 void ts_Piece_destroy(ts_Piece *piece)
 { free(piece); }
 
+/*
+ * Set piece coordinates
+ */
 void ts_Piece_setposition(ts_Piece *piece, const ts_Coord coord)
 { piece->position = coord; }
 
@@ -282,6 +292,9 @@ int CUBE_coord(ts_Piece *piece, ts_Coord *coord, uint8_t length)
   return 4;
 }
 
+/*
+ * Gets piece coordinates
+ */
 int ts_Piece_getcoords(ts_Piece *piece, ts_Coord *coord, uint8_t length)
 {
   switch(piece->shape) {
@@ -314,4 +327,9 @@ void ts_Piece_draw(ts_Piece *piece, ts_Piece_drawfn fn)
   size = ts_Piece_getcoords(piece, coords, 16);
   for(int i = 0; i < size; i++)
   { fn(coords[i].y, coords[i].x); }
+}
+
+void ts_Piece_rotate_cw(ts_Piece *piece)
+{
+  piece->rotation = (piece->rotation + 1) % 4;
 }

@@ -128,3 +128,71 @@ int i = 0;
     coords[i].x = i;
   }
 }
+
+void ts_Game_getLeftBorderCoords(ts_Game *game, ts_Coord *coords, uint8_t length)
+{
+int i;
+  for(i = 0; i < game->height && i < length; i++)
+  {
+    coords[i].y = i;
+    coords[i].x = 0;
+  }
+}
+
+void ts_Game_getRightBorderCoords(ts_Game *game, ts_Coord *coords, uint8_t length)
+{
+int i;
+  for(i = 0; i < game->height && i < length; i++)
+  {
+    coords[i].y = i;
+    coords[i].x = game->width;
+  }
+}
+
+bool ts_Game_pieceLeftCollision(ts_Game *game)
+{
+  ts_Coord coord[16],
+           frozenCoords[16],
+           leftCoords[game->height];
+int size, frozenSize;
+
+  if(game->piece == NULL) { return false; }
+
+  size = ts_Piece_getcoords(game->piece, coord, 16);
+  ts_Game_getLeftBorderCoords(game, leftCoords, game->height);
+  if(ts_Coords_leftCollision(coord, size, leftCoords, game->height))
+    return true;
+  else
+    for(int i = 0; i < game->frozenPiecesCount; i++)
+    {
+      frozenSize = ts_Piece_getcoords(game->frozenPieces[i], frozenCoords, 16);
+      if(ts_Coords_leftCollision(coord, size, frozenCoords, frozenSize))
+        return true;
+    }
+
+  return false;
+}
+
+bool ts_Game_pieceRightCollision(ts_Game *game)
+{
+  ts_Coord coord[16],
+           frozenCoords[16],
+           rightCoords[game->height];
+int size, frozenSize;
+
+  if(game->piece == NULL) { return false; }
+
+  size = ts_Piece_getcoords(game->piece, coord, 16);
+  ts_Game_getRightBorderCoords(game, rightCoords, game->height);
+  if(ts_Coords_leftCollision(rightCoords, game->height, coord, size))
+    return true;
+  else
+    for(int i = 0; i < game->frozenPiecesCount; i++)
+    {
+      frozenSize = ts_Piece_getcoords(game->frozenPieces[i], frozenCoords, 16);
+      if(ts_Coords_leftCollision(frozenCoords, frozenSize, coord, size))
+        return true;
+    }
+
+  return false;
+}

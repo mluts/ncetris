@@ -8,8 +8,6 @@
 
 #define ASSERT_EQUAL(A, B) (assert((A) == (B) && "Expected " #A "to equal " #B))
 
-static uint8_t canvas[64][64];
-
 void test_Z_piece_coords()
 {
   INFO("--testing Z piece coords");
@@ -207,9 +205,62 @@ void test_timeval_add()
   );
 }
 
-void drawfn(uint8_t y, uint8_t x)
+void test_piece_rotation()
 {
-  canvas[y][x] = 1;
+  ts_Piece *piece = ts_Piece_new(LINE);
+  ASSERT_EQUAL(piece->rotation, 0);
+
+  ts_Piece_rotate_cw(piece);
+  ASSERT_EQUAL(piece->rotation, 1);
+
+  ts_Piece_rotate_cw(piece);
+  ASSERT_EQUAL(piece->rotation, 2);
+
+  ts_Piece_rotate_cw(piece);
+  ASSERT_EQUAL(piece->rotation, 3);
+
+  ts_Piece_rotate_cw(piece);
+  ASSERT_EQUAL(piece->rotation, 0);
+
+  ts_Piece_rotate_cw(piece);
+  ASSERT_EQUAL(piece->rotation, 1);
+
+  ts_Piece_destroy(piece);
+}
+
+void test_piece_left_collision()
+{
+  ASSERT_EQUAL(
+      true,
+      ts_Coord_leftCollision(
+        &(ts_Coord){ 10, 10 },
+        &(ts_Coord){ 10, 9 }
+        )
+      );
+
+  ASSERT_EQUAL(
+      false,
+      ts_Coord_leftCollision(
+        &(ts_Coord){ 10, 11 },
+        &(ts_Coord){ 10, 9 }
+        )
+      );
+
+  ASSERT_EQUAL(
+      true,
+      ts_Coord_leftCollision(
+        &(ts_Coord){ 10, 1 },
+        &(ts_Coord){ 10, 0 }
+        )
+      );
+
+  ASSERT_EQUAL(
+      false,
+      ts_Coord_leftCollision(
+        &(ts_Coord){ 10, 10 },
+        &(ts_Coord){ 9, 9 }
+        )
+      );
 }
 
 int main()
@@ -221,5 +272,7 @@ int main()
   test_game_border_coords();
   test_coord_collision();
   test_game_piece_collision();
+  test_piece_rotation();
+  test_piece_left_collision();
   return 0;
 }

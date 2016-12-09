@@ -22,5 +22,6 @@ void ts_Piece_destroy(ts_Piece *);
 void ts_Piece_setposition(ts_Piece *, ts_Coord);
 int ts_Piece_getcoords(ts_Piece *, ts_Coord*, uint8_t length);
 void ts_Piece_draw(ts_Piece *, ts_Piece_drawfn);
+void ts_Piece_rotate_cw(ts_Piece *);
 
 #endif
