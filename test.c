@@ -8,6 +8,8 @@
 
 #define ASSERT_EQUAL(A, B) (assert((A) == (B) && "Expected " #A "to equal " #B))
 
+static uint8_t canvas[64][64];
+
 void test_Z_piece_coords()
 {
   INFO("--testing Z piece coords");
@@ -164,7 +166,7 @@ INFO("--Testing game piece collision");
   INFO("  Expecting down collision");
   ASSERT_EQUAL(
       true,
-      ts_Game_pieceCollision(game)
+      ts_Game_pieceDownCollision(game)
       );
 
   ts_Piece_setposition(game->piece, (ts_Coord){15, 10});
@@ -172,7 +174,7 @@ INFO("--Testing game piece collision");
   INFO("  Expecting no down collision");
   ASSERT_EQUAL(
       false,
-      ts_Game_pieceCollision(game)
+      ts_Game_pieceDownCollision(game)
       );
 
   ts_Game_destroy(game);
@@ -203,6 +205,11 @@ void test_timeval_add()
     &(struct timeval){1, 500100},
     &(struct timeval){2, 100}
   );
+}
+
+void drawfn(uint8_t y, uint8_t x)
+{
+  canvas[y][x] = 1;
 }
 
 int main()

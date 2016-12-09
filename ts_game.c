@@ -45,7 +45,7 @@ void ts_Game_draw(ts_Game *game, ts_Game_drawfn fn)
   { ts_Piece_draw(game->piece, fn); }
 }
 
-bool ts_Game_pieceCollision(ts_Game *game)
+bool ts_Game_pieceDownCollision(ts_Game *game)
 {
 ts_Coord coords[16],
          frozenCoords[16],
@@ -71,7 +71,7 @@ int size, frozenSize;
 
 void ts_Game_move(ts_Game *game)
 {
-  if(game->piece == NULL || ts_Game_pieceCollision(game)) {
+  if(game->piece == NULL || ts_Game_pieceDownCollision(game)) {
     ts_Game_spawnpiece(game);
   } else {
     ts_Piece_setposition(

@@ -1,5 +1,8 @@
 GCC = gcc -Wall -g -lcurses -lm -std=gnu11 -DNDEBUG
 
+tetris: tetris.c ts_piece.h ts_piece.o ts_game.h ts_game.o ts_coord.h ts_coord.o \
+	util.o ts_loop.o
+	${GCC} -o $@ ts_game.o ts_piece.o ts_coord.o util.o ts_loop.o tetris.c
 test: test.c ts_piece.h ts_piece.o ts_game.h ts_game.o ts_coord.h ts_coord.o \
 	util.o
 	${GCC} -UNDEBUG -o $@ ts_game.o ts_piece.o ts_coord.o util.o test.c
@@ -14,5 +17,5 @@ ts_loop.o: ts_loop.c ts_loop.h
 util.o: util.c util.h
 	${GCC} -c -o $@ util.c
 clean:
-	rm -f ts_piece.o ts_game.o ts_coord.o test util.o ts_loop.o
+	rm -f ts_piece.o ts_game.o ts_coord.o test util.o ts_loop.o tetris
 .PHONY: clean
