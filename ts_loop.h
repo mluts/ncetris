@@ -6,6 +6,8 @@
 typedef struct {
   struct timeval rate;
   struct timeval startTime;
+  struct timeval moveDelay;
+  struct timeval nextMove;
 } ts_GameLoop;
 
 ts_GameLoop ts_GameLoop_new(struct timeval rate);

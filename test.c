@@ -178,11 +178,39 @@ INFO("--Testing game piece collision");
   ts_Game_destroy(game);
 }
 
+void assert_timeval_add_result(
+    const struct timeval *x,
+    const struct timeval *y,
+    const struct timeval *expected
+    )
+{
+struct timeval result;
+  timeval_add(x, y, &result);
+  ASSERT_EQUAL(result.tv_sec, expected->tv_sec);
+  ASSERT_EQUAL(result.tv_usec, expected->tv_usec);
+}
+
+void test_timeval_add()
+{
+  assert_timeval_add_result(
+    &(struct timeval){0, 100},
+    &(struct timeval){0, 100},
+    &(struct timeval){0, 200}
+  );
+
+  assert_timeval_add_result(
+    &(struct timeval){0, 500000},
+    &(struct timeval){1, 500100},
+    &(struct timeval){2, 100}
+  );
+}
+
 int main()
 {
   test_piece_initial_values();
   test_Z_piece_coords();
   test_timeval_subtract();
+  test_timeval_add();
   test_game_border_coords();
   test_coord_collision();
   test_game_piece_collision();

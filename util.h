@@ -13,6 +13,11 @@ int timeval_subtract(
     const struct timeval *y,
     struct timeval *result);
 
+void timeval_add(
+    const struct timeval *x,
+    const struct timeval *y,
+    struct timeval *result);
+
 void nanosleep2(const struct timeval *time);
 
 #endif

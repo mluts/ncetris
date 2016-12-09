@@ -14,5 +14,5 @@ ts_loop.o: ts_loop.c ts_loop.h
 util.o: util.c util.h
 	${GCC} -c -o $@ util.c
 clean:
-	rm -f ts_piece.o ts_game.o ts_coord.o test util.o
+	rm -f ts_piece.o ts_game.o ts_coord.o test util.o ts_loop.o
 .PHONY: clean

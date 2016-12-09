@@ -28,6 +28,19 @@ int timeval_subtract(
   return negative;
 }
 
+void timeval_add(
+    const struct timeval *x,
+    const struct timeval *y,
+    struct timeval *result)
+{
+  result->tv_sec = x->tv_sec + y->tv_sec;
+  result->tv_usec = x->tv_usec + y->tv_usec;
+  if(result->tv_usec > MILLION) {
+    result->tv_sec++;
+    result->tv_usec -= MILLION;
+  }
+}
+
 void nanosleep2(const struct timeval *time)
 {
 
