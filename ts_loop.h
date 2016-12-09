@@ -10,7 +10,10 @@ typedef struct {
   struct timeval nextMove;
 } ts_GameLoop;
 
-ts_GameLoop ts_GameLoop_new(struct timeval rate);
-ts_GameLoop ts_gameLoop_sleep(struct timeval tickStart);
+typedef void (*ts_GameLoop_framefn)(void);
+
+ts_GameLoop ts_GameLoop_new(struct timeval rate, struct timeval moveDelay);
+void ts_GameLoop_draw(ts_GameLoop *, ts_GameLoop_framefn);
+void ts_GameLoop_move(ts_GameLoop *, ts_GameLoop_framefn);
 
 #endif

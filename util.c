@@ -1,4 +1,5 @@
 #include "util.h"
+
 int timeval_subtract(
     const struct timeval *x,
     const struct timeval *y,
