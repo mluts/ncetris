@@ -1,5 +1,5 @@
 /tetris
 *.o
-/test
+/test/test
 /bin
 /tags

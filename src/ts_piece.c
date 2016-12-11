@@ -208,3 +208,13 @@ void ts_Piece_move(ts_Piece *piece, int8_t dy, int8_t dx)
   else if(dx > 0)
     piece->pos.x++;
 }
+
+ts_Pos ts_Piece_pos(const ts_Piece *piece, int8_t n)
+{
+ts_Pos tetromino = TETROMINOS[piece->type][piece->orientation][n];
+
+  return (ts_Pos){
+    piece->pos.y + tetromino.y,
+    piece->pos.x + tetromino.x
+  };
+}

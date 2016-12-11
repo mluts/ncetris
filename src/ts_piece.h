@@ -12,8 +12,8 @@
 
 #define RANDOM_TETROMINO (rand()%NUM_TETROMINOS)
 
-#define PIECE_POS(piece, n) (ts_Pos){ .y = piece->pos.y + TETROMINO_POS(piece, n).y,\
-                                      .x = piece->pos.x + TETROMINO_POS(piece, n).x }
+#define PIECE_POS(piece, n) (ts_Pos){ piece->pos.y + TETROMINO_POS(piece, n).y,\
+                                      piece->pos.x + TETROMINO_POS(piece, n).x }
 
 typedef struct {
   int8_t type, orientation;
@@ -26,4 +26,5 @@ ts_Piece *ts_Piece_new(int8_t type);
 void ts_Piece_destroy(ts_Piece *);
 void ts_Piece_rotate(ts_Piece *, int8_t direction);
 void ts_Piece_move(ts_Piece *, int8_t dy, int8_t dx);
+ts_Pos ts_Piece_pos(const ts_Piece *, int8_t n);
 #endif

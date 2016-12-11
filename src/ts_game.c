@@ -93,6 +93,8 @@ int y, x;
         continue;
       else if(x == game->board->width - 1)
         removeline(game, y);
+
+  ts_Board_put_piece(game->board, game->failing);
 }
 
 ts_Game *ts_Game_new(ts_BoardDimension width, ts_BoardDimension height)
@@ -131,6 +133,7 @@ void ts_Game_fall(ts_Game *game)
       game->finished = true;
       return;
     } else {
+      ts_Board_put_piece(game->board, game->failing);
       spawnfailing(game);
     }
   }

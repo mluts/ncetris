@@ -9,7 +9,7 @@ int main()
 {
   ts_Game *game = ts_Game_new(40, 20);
   ts_GameLoop *loop = ts_GameLoop_new(
-      (struct timeval){ 0, 200000 }
+      (struct timeval){ 0, 20000 }
       );
   ts_ui *ui = ts_ui_new(game->board->width, game->board->height);
   int falls = 0;
