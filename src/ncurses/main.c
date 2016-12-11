@@ -26,6 +26,6 @@ int main()
   }
 
   ts_Game_destroy(game);
-  ts_ui_destroy(ui);
   ts_GameLoop_destroy(loop);
+  ts_ui_destroy(ui);
 }

@@ -53,6 +53,8 @@ ts_ui *ts_ui_new(int16_t boardWidth, int16_t boardHeight)
 
 void ts_ui_destroy(ts_ui *ui)
 {
+  delwin(ui->board);
+  endwin();
   free(ui);
 }
 
