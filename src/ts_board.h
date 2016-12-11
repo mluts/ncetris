@@ -5,8 +5,8 @@
 #include "ts_piece.h"
 #include "ts_pos.h"
 
-#define BOARD_PRESENT '#'
 #define BOARD_EMPTY 0
+#define BOARD_PIECE(piece) (BOARD_EMPTY+piece->type)
 
 typedef int16_t ts_BoardDimension;
 typedef uint8_t ts_BoardChar;

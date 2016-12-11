@@ -35,7 +35,7 @@ ts_Pos pos;
   for(int n = 0; n < NUM_TETROMINO_SIZE; n++)
   {
     pos = ts_Piece_pos(piece, n);
-    ts_Board_set(board, &pos, BOARD_PRESENT);
+    ts_Board_set(board, &pos, BOARD_PIECE(piece));
   }
 }
 

@@ -78,6 +78,8 @@ ts_Pos pos, ppos;
       else
         ts_Board_set(game->board, &pos, ts_Board_get(game->board, &ppos));
     }
+
+  game->linesremoved++;
 }
 
 static void removelines(ts_Game *game)
@@ -164,3 +166,6 @@ void ts_Game_move(ts_Game *game, ts_Movement movement)
       break;
   };
 }
+
+int16_t ts_Game_getlinesremoved(ts_Game *game)
+{ return game->linesremoved; }

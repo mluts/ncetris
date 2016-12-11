@@ -20,26 +20,28 @@ void ts_GameLoop_destroy(ts_GameLoop *loop)
 
 void ts_GameLoop_startFrame(ts_GameLoop *loop)
 {
-  loop->ticks++;
+  loop->frames++;
   gettimeofday(&loop->startFrameTime, NULL);
 }
 
 void ts_GameLoop_stopFrame(ts_GameLoop *loop)
 {
-  gettimeofday(&loop->stopFrameTime, NULL);
+struct timeval toSleep, stopFrameTime, frameDelay;
+
+  gettimeofday(&stopFrameTime, NULL);
 
   timeval_subtract(
-      &loop->stopFrameTime,
+      &stopFrameTime,
       &loop->startFrameTime,
-      &loop->frameDelay
+      &frameDelay
       );
 
   if(!timeval_subtract(
         &loop->frameRate,
-        &loop->frameDelay,
-        &loop->toSleep))
-    nanosleep2(&loop->toSleep);
+        &frameDelay,
+        &toSleep))
+    nanosleep2(&toSleep);
 }
 
-int32_t ts_GameLoop_getticks(ts_GameLoop *loop)
-{ return loop->ticks; }
+int32_t ts_GameLoop_getframes(ts_GameLoop *loop)
+{ return loop->frames; }

@@ -9,6 +9,7 @@ typedef struct {
   bool finished;
   ts_Board *board;
   ts_Piece *failing;
+  int16_t linesremoved;
 } ts_Game;
 
 typedef enum {
@@ -20,5 +21,6 @@ void ts_Game_destroy(ts_Game *);
 void ts_Game_fall(ts_Game *);
 bool ts_Game_isfinished(ts_Game *);
 void ts_Game_move(ts_Game *, ts_Movement);
+int16_t ts_Game_getlinesremoved(ts_Game *);
 
 #endif

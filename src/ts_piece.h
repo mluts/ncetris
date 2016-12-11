@@ -8,12 +8,7 @@
 #define NUM_ORIENTATIONS 4
 #define NUM_TETROMINO_SIZE 4
 
-#define TETROMINO_POS(piece,n) TETROMINOS[piece->type][piece->orientation][n]
-
 #define RANDOM_TETROMINO (rand()%NUM_TETROMINOS)
-
-#define PIECE_POS(piece, n) (ts_Pos){ piece->pos.y + TETROMINO_POS(piece, n).y,\
-                                      piece->pos.x + TETROMINO_POS(piece, n).x }
 
 typedef struct {
   int8_t type, orientation;

@@ -6,17 +6,14 @@
 
 typedef struct {
   struct timeval frameRate,
-                 startFrameTime,
-                 stopFrameTime,
-                 frameDelay,
-                 toSleep;
-  int32_t ticks;
+                 startFrameTime;
+  int32_t frames;
 } ts_GameLoop;
 
 ts_GameLoop *ts_GameLoop_new(struct timeval frameRate);
 void ts_GameLoop_destroy(ts_GameLoop *);
 void ts_GameLoop_startFrame(ts_GameLoop *);
 void ts_GameLoop_stopFrame(ts_GameLoop *);
-int32_t ts_GameLoop_getticks(ts_GameLoop *);
+int32_t ts_GameLoop_getframes(ts_GameLoop *);
 
 #endif

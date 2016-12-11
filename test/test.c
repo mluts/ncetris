@@ -1,4 +1,5 @@
 #include "ts_game.h"
+#include "ts_loop.h"
 #include <assert.h>
 #include <stdlib.h>
 
@@ -48,10 +49,41 @@ void test_figure_is_copied_to_board_after_failing()
   ts_Game_destroy(game);
 }
 
+void test_loop_increments_frames()
+{
+int frames = 1 + rand() % 30, i = frames;
+  ts_GameLoop *loop = ts_GameLoop_new((struct timeval){0, 1});
+  while(i > 0)
+  {
+    ts_GameLoop_startFrame(loop);
+    ts_GameLoop_stopFrame(loop);
+    i--;
+  }
+  assert(ts_GameLoop_getframes(loop) == frames && "Frames should increment");
+  ts_GameLoop_destroy(loop);
+}
+
+void test_game_increments_lines_removed()
+{
+int16_t lines = 1 + rand() % 3;
+  ts_Game *game = ts_Game_new(w, h);
+  for(int y = h-1; y >= h-lines; y--)
+    for(int x = 0; x < w; x++)
+      ts_Board_set(game->board, &(ts_Pos){y,x}, BOARD_PIECE(game->failing));
+
+  assert(ts_Game_getlinesremoved(game) == 0 && "Initially linesremoved should be 0");
+  ts_Game_fall(game);
+  assert(ts_Game_getlinesremoved(game) == lines && "linesremoved should be incremented for each removed line");
+
+  ts_Game_destroy(game);
+}
+
 int main()
 {
   test_all_pieces_fit_to_empty_board();
   test_figure_is_on_board_on_start();
   test_figure_is_copied_to_board_after_failing();
+  test_loop_increments_frames();
+  test_game_increments_lines_removed();
   return 0;
 }
