@@ -1,21 +1,18 @@
-GCC = gcc -Wall -g -lcurses -lm -std=gnu11 -DNDEBUG
+FLAGS = -Wall -pedantic -std=gnu11 -DNDEBUG
+INC = -Isrc
+CFLAGS = ${FLAGS} -c -g ${INC}
+LFLAGS = ${FLAGS} -lcurses -lm
+DIR_GUARD = mkdir -p ${@D}
+CC = gcc
 
-tetris: tetris.c ts_piece.h ts_piece.o ts_game.h ts_game.o ts_coord.h ts_coord.o \
-	util.o ts_loop.o
-	${GCC} -o $@ ts_game.o ts_piece.o ts_coord.o util.o ts_loop.o tetris.c
-test: test.c ts_piece.h ts_piece.o ts_game.h ts_game.o ts_coord.h ts_coord.o \
-	util.o
-	${GCC} -UNDEBUG -o $@ ts_game.o ts_piece.o ts_coord.o util.o test.c
-ts_piece.o: ts_piece.c ts_piece.h
-	${GCC} -c -o $@ ts_piece.c
-ts_game.o: ts_game.c ts_game.h
-	${GCC} -c -o $@ ts_game.c
-ts_coord.o: ts_coord.c ts_coord.h
-	${GCC} -c -o $@ ts_coord.c
-ts_loop.o: ts_loop.c ts_loop.h
-	${GCC} -c -o $@ ts_loop.c
-util.o: util.c util.h
-	${GCC} -c -o $@ util.c
+bin/ncetris: src/ts_board.o src/ts_game.o src/ts_loop.o src/ts_piece.o src/util.o \
+ 	src/ncurses/ui.o src/ncurses/main.o
+	${DIR_GUARD}
+	${CC} ${LFLAGS} $^ -o $@
+
+obj/%.o: src/%.c src/%.h
+	${DIR_GUARD}
+	${CC} ${CFLAGS} $< -o $@
 clean:
-	rm -f ts_piece.o ts_game.o ts_coord.o test util.o ts_loop.o tetris
+	rm -rf obj bin
 .PHONY: clean
