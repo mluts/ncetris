@@ -8,7 +8,8 @@ static inline ts_PosNumber boardindex(const ts_Board *board, const ts_Pos *pos)
 
 static inline bool within_bounds(const ts_Board *board, const ts_Pos *pos)
 {
-  return pos->y < board->height && pos->x < board->width;
+  return pos->y > 0 && pos->y < board->height &&
+         pos->x > 0 && pos->x < board->width;
 }
 
 ts_Board *ts_Board_new(ts_BoardDimension width, ts_BoardDimension height)

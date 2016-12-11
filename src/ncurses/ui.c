@@ -8,7 +8,7 @@ ts_Pos pos;
   box(ui->board, 0, 0);
   for(int y = 0; y < ui->boardHeight; y++)
   {
-    wmove(ui->board, y+2, 2);
+    wmove(ui->board, y+1, 1);
     for(int x = 0; x < ui->boardWidth; x++)
     {
       pos = (ts_Pos){y,x};
