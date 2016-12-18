@@ -12,15 +12,11 @@ int main()
       (struct timeval){ 0, 1000000/10 }
       );
   ts_ui *ui = ts_ui_new(game->board->width, game->board->height);
-  int falls = 0;
 
   while(!game->finished) {
     ts_GameLoop_startFrame(loop);
     if(ts_GameLoop_getframes(loop) % TICKS_PER_FALL == 0)
-    {
-      falls++;
       ts_Game_fall(game);
-    }
     ts_ui_draw(ui, game);
     ts_GameLoop_stopFrame(loop);
   }
