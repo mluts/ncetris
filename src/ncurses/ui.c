@@ -9,11 +9,11 @@ static void draw_board(ts_ui *ui, ts_Game *game)
 ts_Pos pos;
 ts_BoardChar ch;
 
-  wclear(ui->board);
-  box(ui->board, 0, 0);
+  wclear(ui->board->win);
+  box(ui->board->win, 0, 0);
   for(int y = 0; y < ui->boardHeight; y++)
   {
-    wmove(ui->board, y+1, 1);
+    wmove(ui->board->win, y+1, 1);
     for(int x = 0; x < ui->boardWidth; x++)
     {
       pos = (ts_Pos){y,x};
@@ -21,16 +21,31 @@ ts_BoardChar ch;
 
       if(ch != BOARD_EMPTY)
       {
-        DRAW(ui->board, ' ' |
+        DRAW(ui->board->win, ' ' |
                         A_REVERSE |
                         COLOR_PAIR(BOARD_PIECE_TYPE(ch)));
       }
       else
-      { DRAW(ui->board, ' '); }
+      { DRAW(ui->board->win, ' '); }
     }
   }
 
-  wnoutrefresh(ui->board);
+  wnoutrefresh(ui->board->win);
+}
+
+static void draw_next_failing(ts_ui *ui, ts_Game *game)
+{
+  ts_Piece *piece = ts_Piece_new(game->failing->type);
+  wclear(ui->nextFailing->win);
+  box(ui->nextFailing->win, 0, 0);
+  for(int n = 0; n < NUM_TETROMINO_SIZE; n++)
+  {
+    ts_Pos pos = ts_Piece_pos(piece, n);
+    wmove(ui->nextFailing->win, pos.y + 2, 3 + pos.x * COLS_PER_CELL);
+    DRAW(ui->nextFailing->win, ' ' | A_REVERSE | COLOR_PAIR(piece->type));
+  }
+  ts_Piece_destroy(piece);
+  wnoutrefresh(ui->nextFailing->win);
 }
 
 static void init_ncurses()
@@ -54,6 +69,8 @@ static void init_ncurses()
 
 ts_ui *ts_ui_new(int16_t boardWidth, int16_t boardHeight)
 {
+int boardWindowHeight, boardWindowWidth;
+
   ts_ui *ui = calloc(1, sizeof(ts_ui));
   if(ui != NULL)
   {
@@ -62,9 +79,18 @@ ts_ui *ts_ui_new(int16_t boardWidth, int16_t boardHeight)
     ui->boardWidth = boardWidth;
     ui->boardHeight = boardHeight;
 
-    ui->board = newwin(
-        boardHeight + 2, boardWidth * COLS_PER_CELL + 2,
+    boardWindowHeight = boardHeight + 2;
+    boardWindowWidth = boardWidth * COLS_PER_CELL + 2;
+
+    ui->board = ts_ui_win_new(
+        boardWindowHeight, boardWindowWidth,
         1, 1
+        );
+
+    ui->nextFailing = ts_ui_win_new(
+        NUM_TETROMINO_SIZE + 3,
+        (NUM_TETROMINO_SIZE * COLS_PER_CELL) + 4,
+        1, boardWindowWidth + 1
         );
   }
 
@@ -73,7 +99,8 @@ ts_ui *ts_ui_new(int16_t boardWidth, int16_t boardHeight)
 
 void ts_ui_destroy(ts_ui *ui)
 {
-  delwin(ui->board);
+  ts_ui_win_destroy(ui->board);
+  ts_ui_win_destroy(ui->nextFailing);
   endwin();
   free(ui);
 }
@@ -81,6 +108,7 @@ void ts_ui_destroy(ts_ui *ui)
 void ts_ui_draw(ts_ui *ui, ts_Game *game)
 {
   draw_board(ui, game);
+  draw_next_failing(ui, game);
   doupdate();
 }
 
@@ -103,4 +131,24 @@ bool ts_ui_process_key(ts_ui *ui, ts_Game *game)
       break;
   }
   return false;
+}
+
+ts_ui_win *ts_ui_win_new(int16_t h, int16_t w, int16_t y, int16_t x)
+{
+  ts_ui_win *win = calloc(1, sizeof(ts_ui_win));
+  if(win != NULL)
+  {
+    win->win = newwin(h, w, y, x);
+    win->width = w;
+    win->height = h;
+    win->y = y;
+    win->x = x;
+  }
+  return win;
+}
+
+void ts_ui_win_destroy(ts_ui_win *win)
+{
+  delwin(win->win);
+  free(win);
 }
