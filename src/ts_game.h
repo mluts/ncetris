@@ -9,6 +9,7 @@ typedef struct {
   bool finished;
   ts_Board *board;
   ts_Piece *failing;
+  ts_Piece *nextFailing;
   int16_t linesremoved;
 } ts_Game;
 

@@ -35,7 +35,7 @@ ts_BoardChar ch;
 
 static void draw_next_failing(ts_ui *ui, ts_Game *game)
 {
-  ts_Piece *piece = ts_Piece_new(game->failing->type);
+  ts_Piece *piece = ts_Piece_new(game->nextFailing->type);
   wclear(ui->nextFailing->win);
   box(ui->nextFailing->win, 0, 0);
   for(int n = 0; n < NUM_TETROMINO_SIZE; n++)

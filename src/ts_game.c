@@ -9,7 +9,15 @@ static void spawnfailing(ts_Game *game)
     game->failing = NULL;
   }
 
-  game->failing = ts_Piece_new(RANDOM_TETROMINO);
+  if(game->nextFailing == NULL) {
+    game->nextFailing = ts_Piece_new(RANDOM_TETROMINO);
+    game->failing = ts_Piece_new(RANDOM_TETROMINO);
+  } else {
+    ts_Piece_destroy(game->failing);
+    game->failing = game->nextFailing;
+    game->nextFailing = ts_Piece_new(RANDOM_TETROMINO);
+  }
+
   game->failing->pos = (ts_Pos){0,game->board->width/2};
 }
 
@@ -108,6 +116,8 @@ ts_Game *ts_Game_new(ts_BoardDimension width, ts_BoardDimension height)
   ts_Game *game = calloc(1, sizeof(ts_Game));
   if(game != NULL) {
     game->finished = false;
+    game->failing = NULL;
+    game->nextFailing = NULL;
     game->board = ts_Board_new(width, height);
     spawnfailing(game);
   }
