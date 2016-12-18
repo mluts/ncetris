@@ -13,13 +13,22 @@ int main()
       );
   ts_ui *ui = ts_ui_new(game->board->width, game->board->height);
 
+  int ticks = 0;
+
   while(!game->finished) {
+    ticks = (ticks + 1) % TICKS_PER_FALL;
+
     ts_GameLoop_startFrame(loop);
 
-    ts_ui_process_key(ui, game);
-
-    if(ts_GameLoop_getframes(loop) % TICKS_PER_FALL == 0)
+    if(ticks == 0)
+    {
       ts_Game_fall(game);
+    }
+    else if(ts_ui_process_key(ui, game))
+    {
+      ticks = 0;
+      ts_Game_fall(game);
+    }
     ts_ui_draw(ui, game);
     ts_GameLoop_stopFrame(loop);
   }

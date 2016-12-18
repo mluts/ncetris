@@ -69,7 +69,7 @@ void ts_ui_draw(ts_ui *ui, ts_Game *game)
   doupdate();
 }
 
-void ts_ui_process_key(ts_ui *ui, ts_Game *game)
+bool ts_ui_process_key(ts_ui *ui, ts_Game *game)
 {
   switch(getch())
   {
@@ -84,6 +84,8 @@ void ts_ui_process_key(ts_ui *ui, ts_Game *game)
       break;
     case KEY_DOWN:
       ts_Game_fall(game);
+      return true;
       break;
   }
+  return false;
 }
