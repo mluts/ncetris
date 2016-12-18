@@ -10,6 +10,14 @@
 
 #define RANDOM_TETROMINO (rand()%NUM_TETROMINOS)
 
+#define TETROMINO_J 0
+#define TETROMINO_L 1
+#define TETROMINO_3 2
+#define TETROMINO_I 3
+#define TETROMINO_Z 4
+#define TETROMINO_S 5
+#define TETROMINO_O 6
+
 typedef struct {
   int8_t type, orientation;
   ts_Pos pos;

@@ -7,6 +7,7 @@
 
 #define BOARD_EMPTY 0
 #define BOARD_PIECE(piece) (BOARD_EMPTY+piece->type+1)
+#define BOARD_PIECE_TYPE(ch) (ch-BOARD_EMPTY-1)
 
 typedef int16_t ts_BoardDimension;
 typedef uint8_t ts_BoardChar;

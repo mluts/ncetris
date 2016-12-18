@@ -7,6 +7,7 @@
 static void draw_board(ts_ui *ui, ts_Game *game)
 {
 ts_Pos pos;
+ts_BoardChar ch;
 
   wclear(ui->board);
   box(ui->board, 0, 0);
@@ -16,9 +17,14 @@ ts_Pos pos;
     for(int x = 0; x < ui->boardWidth; x++)
     {
       pos = (ts_Pos){y,x};
+      ch = ts_Board_get(game->board, &pos);
 
-      if(ts_Board_get(game->board, &pos) != BOARD_EMPTY)
-      { DRAW(ui->board, ' ' | A_REVERSE); }
+      if(ch != BOARD_EMPTY)
+      {
+        DRAW(ui->board, ' ' |
+                        A_REVERSE |
+                        COLOR_PAIR(BOARD_PIECE_TYPE(ch)));
+      }
       else
       { DRAW(ui->board, ' '); }
     }
@@ -35,6 +41,15 @@ static void init_ncurses()
   keypad(stdscr, TRUE);
   curs_set(0);
   nodelay(stdscr, true);
+  start_color();
+
+  init_pair(TETROMINO_J, COLOR_GREEN, COLOR_BLACK);
+  init_pair(TETROMINO_L, COLOR_CYAN, COLOR_BLACK);
+  init_pair(TETROMINO_3, COLOR_RED, COLOR_BLACK);
+  init_pair(TETROMINO_I, COLOR_YELLOW, COLOR_BLACK);
+  init_pair(TETROMINO_Z, COLOR_MAGENTA, COLOR_BLACK);
+  init_pair(TETROMINO_S, COLOR_BLUE, COLOR_BLACK);
+  init_pair(TETROMINO_O, COLOR_WHITE, COLOR_BLACK);
 }
 
 ts_ui *ts_ui_new(int16_t boardWidth, int16_t boardHeight)
