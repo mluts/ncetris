@@ -90,11 +90,15 @@ int y, x;
   ts_Board_remove_piece(game->board, game->failing);
 
   for(y = 0; y < game->board->height; y++)
-    for(x = 0, pos = (ts_Pos){y, x}; x < game->board->width; x++)
+    for(x = 0; x < game->board->width; x++)
+    {
+      pos = (ts_Pos){y, x};
+
       if(ts_Board_get(game->board, &pos) == BOARD_EMPTY)
-        continue;
+        break;
       else if(x == game->board->width - 1)
         removeline(game, y);
+    }
 
   ts_Board_put_piece(game->board, game->failing);
 }
