@@ -1,3 +1,5 @@
 #!/bin/bash
 make test/test
-./test/test
+if ./test/test; then
+  echo "Tests passed!"
+fi

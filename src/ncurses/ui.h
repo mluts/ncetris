@@ -3,6 +3,16 @@
 #include <ncurses.h>
 #include "ts_game.h"
 
+extern const int gravities[];
+
+#define COLS_PER_CELL 2
+#define DRAW(win, ch) waddch(win, ch); waddch(win, ch)
+#define LINES_PER_LEVEL 10
+#define LEVEL_SCORE_MULTIPLIER 40
+#define MINLEVEL 1
+#define MAXLEVEL 10
+#define GRAVITY_PER_LEVEL(l) gravities[l-1]
+
 typedef struct {
   WINDOW *win;
   int16_t width, height, y, x;
@@ -10,8 +20,11 @@ typedef struct {
 
 typedef struct {
   ts_ui_win *board;
-  ts_ui_win *nextFailing;
+  ts_ui_win *nextFalling;
+  ts_ui_win *score;
   int16_t boardWidth, boardHeight;
+  int32_t linesremoved, scorenum, level;
+  bool exitRequested;
 } ts_ui;
 
 ts_ui *ts_ui_new(int16_t boardWidth, int16_t boardHeight);

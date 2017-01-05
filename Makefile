@@ -1,6 +1,6 @@
-FLAGS = -Wall -pedantic -std=gnu11 -DNDEBUG
+FLAGS = -Wall -pedantic -std=gnu11 -DNDEBUG -g -ggdb
 INC = -Isrc
-CFLAGS = ${FLAGS} -c -g ${INC}
+CFLAGS = ${FLAGS} -c ${INC}
 LFLAGS = ${FLAGS} -lcurses -lm
 DIR_GUARD = mkdir -p ${@D}
 CC = gcc
@@ -21,4 +21,5 @@ obj/%.o: src/%.c src/%.h
 	${CC} ${CFLAGS} $< -o $@
 clean:
 	rm -rf obj bin test/test
+
 .PHONY: clean

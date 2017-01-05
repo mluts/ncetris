@@ -3,20 +3,19 @@
 #include "ncurses/ui.h"
 #include <sys/time.h>
 
-#define TICKS_PER_FALL 50
-
 int main()
 {
-  ts_Game *game = ts_Game_new(20, 28);
+  ts_Game *game = ts_Game_new(12, 22);
   ts_GameLoop *loop = ts_GameLoop_new(
-      (struct timeval){ 0, 1000000/100 }
+      (struct timeval){ 0, 1000000/200 }
       );
   ts_ui *ui = ts_ui_new(game->board->width, game->board->height);
 
   int ticks = 0;
+  char result[512];
 
-  while(!game->finished) {
-    ticks = (ticks + 1) % TICKS_PER_FALL;
+  while(!(game->finished || ui->exitRequested)) {
+    ticks = (ticks + 1) % GRAVITY_PER_LEVEL(ui->level);
 
     ts_GameLoop_startFrame(loop);
 
@@ -33,7 +32,11 @@ int main()
     ts_GameLoop_stopFrame(loop);
   }
 
+  snprintf(result, 512, "Your score is: %d\n", ui->scorenum);
+
   ts_Game_destroy(game);
   ts_GameLoop_destroy(loop);
   ts_ui_destroy(ui);
+
+  printf(result);
 }
