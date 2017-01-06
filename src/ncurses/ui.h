@@ -24,7 +24,7 @@ typedef struct {
   ts_ui_win *score;
   int16_t boardWidth, boardHeight;
   int32_t linesremoved, scorenum, level;
-  bool exitRequested;
+  bool exitRequested, pause;
 } ts_ui;
 
 ts_ui *ts_ui_new(int16_t boardWidth, int16_t boardHeight);

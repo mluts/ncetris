@@ -129,6 +129,7 @@ ts_ui *ts_ui_new(int16_t boardWidth, int16_t boardHeight)
         );
 
     ui->exitRequested = false;
+    ui->pause = false;
 
     ui->linesremoved = 0;
     ui->level = MINLEVEL;
@@ -157,7 +158,15 @@ void ts_ui_draw(ts_ui *ui, ts_Game *game)
 
 bool ts_ui_process_key(ts_ui *ui, ts_Game *game)
 {
-  switch(getch())
+int c = getch();
+
+  if(c == 'c')
+    ui->pause = !ui->pause;
+
+  if(ui->pause)
+    return false;
+
+  switch(c)
   {
     case 'q':
       ui->exitRequested = true;

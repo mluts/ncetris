@@ -20,14 +20,11 @@ int main()
   while(!(game->finished || ui->exitRequested)) {
     ts_GameLoop_startFrame(loop);
 
-    if(ticks == 0)
+    if(ticks == 0 && !ui->pause)
       ts_Game_fall(game);
 
     if(ts_ui_process_key(ui, game))
-    {
-      ticks = 0;
-      ts_Game_fall(game);
-    }
+      ticks = GRAVITY_PER_LEVEL(ui->level)-1;
 
     if(ts_Board_changed(game->board, board_copy)) {
       ts_ui_draw(ui, game);
