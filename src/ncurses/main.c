@@ -7,9 +7,10 @@ int main()
 {
   ts_Game *game = ts_Game_new(12, 22);
   ts_GameLoop *loop = ts_GameLoop_new(
-      (struct timeval){ 0, 1000000/200 }
+      (struct timeval){ 0, 1000000/300 }
       );
   ts_ui *ui = ts_ui_new(game->board->width, game->board->height);
+  ts_Board *board_copy = ts_Board_new(12,22);
 
   int ticks = 0;
   char result[512];
@@ -21,6 +22,7 @@ int main()
 
     if(ticks == 0)
     {
+      ts_Board_copy(game->board, board_copy);
       ts_Game_fall(game);
     }
     else if(ts_ui_process_key(ui, game))
@@ -28,7 +30,10 @@ int main()
       ticks = 0;
       ts_Game_fall(game);
     }
-    ts_ui_draw(ui, game);
+    if(ticks == 0 || ts_Board_changed(game->board, board_copy)) {
+      ts_ui_draw(ui, game);
+      ts_Board_copy(game->board, board_copy);
+    }
     ts_GameLoop_stopFrame(loop);
   }
 

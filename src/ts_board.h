@@ -25,4 +25,6 @@ void ts_Board_set(ts_Board *, const ts_Pos *, ts_BoardChar value);
 ts_BoardChar ts_Board_get(const ts_Board *, const ts_Pos *);
 void ts_Board_unset(ts_Board *, const ts_Pos *);
 bool ts_Board_piecefits(const ts_Board *, const ts_Piece *);
+void ts_Board_copy(ts_Board *from, ts_Board *to);
+bool ts_Board_changed(ts_Board *, ts_Board *);
 #endif

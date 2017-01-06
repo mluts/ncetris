@@ -1,5 +1,6 @@
 #include "ts_board.h"
 #include <stdlib.h>
+#include <string.h>
 
 static inline ts_PosNumber boardindex(const ts_Board *board, const ts_Pos *pos)
 {
@@ -79,3 +80,21 @@ int n;
 
 ts_BoardChar ts_Board_get(const ts_Board *board, const ts_Pos *pos)
 { return board->board[boardindex(board, pos)]; }
+
+void ts_Board_copy(ts_Board *from, ts_Board *to)
+{
+  memcpy(to->board, from->board, sizeof(ts_BoardChar)*to->width*to->height);
+}
+
+bool ts_Board_changed(ts_Board *a, ts_Board *b)
+{
+  for(int y = 0; y < a->height; y++)
+    for(int x = 0; x < a->width; x++)
+    {
+      ts_Pos pos = (ts_Pos){y,x};
+      if(ts_Board_get(a, &pos) != ts_Board_get(b, &pos))
+        return true;
+    }
+
+  return false;
+}
