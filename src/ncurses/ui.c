@@ -160,6 +160,9 @@ bool ts_ui_process_key(ts_ui *ui, ts_Game *game)
 {
 int c = getch();
 
+  if(c == 'q')
+    ui->exitRequested = true;
+
   if(c == 'c')
     ui->pause = !ui->pause;
 
@@ -168,9 +171,6 @@ int c = getch();
 
   switch(c)
   {
-    case 'q':
-      ui->exitRequested = true;
-      break;
     case KEY_LEFT:
       ts_Game_move(game, TS_LEFT);
       break;
@@ -185,6 +185,7 @@ int c = getch();
       return true;
       break;
   }
+
   return false;
 }
 
