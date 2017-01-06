@@ -11,30 +11,32 @@ int main()
       );
   ts_ui *ui = ts_ui_new(game->board->width, game->board->height);
   ts_Board *board_copy = ts_Board_new(12,22);
+  ts_Board_copy(game->board, board_copy);
 
   int ticks = 0;
   char result[512];
 
-  while(!(game->finished || ui->exitRequested)) {
-    ticks = (ticks + 1) % GRAVITY_PER_LEVEL(ui->level);
 
+  while(!(game->finished || ui->exitRequested)) {
     ts_GameLoop_startFrame(loop);
 
     if(ticks == 0)
-    {
-      ts_Board_copy(game->board, board_copy);
       ts_Game_fall(game);
-    }
-    else if(ts_ui_process_key(ui, game))
+
+    if(ts_ui_process_key(ui, game))
     {
       ticks = 0;
       ts_Game_fall(game);
     }
-    if(ticks == 0 || ts_Board_changed(game->board, board_copy)) {
+
+    if(ts_Board_changed(game->board, board_copy)) {
       ts_ui_draw(ui, game);
       ts_Board_copy(game->board, board_copy);
     }
+
     ts_GameLoop_stopFrame(loop);
+
+    ticks = (ticks + 1) % GRAVITY_PER_LEVEL(ui->level);
   }
 
   snprintf(result, 512, "Your score is: %d\n", ui->scorenum);
