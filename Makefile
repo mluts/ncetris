@@ -1,4 +1,4 @@
-FLAGS = -Wall -pedantic -std=gnu11 -DNDEBUG -g -ggdb
+FLAGS = -Wall -pedantic -std=gnu11 -DNDEBUG
 INC = -Isrc
 CFLAGS = ${FLAGS} -c ${INC}
 LFLAGS = ${FLAGS} -lcurses -lm
@@ -8,10 +8,10 @@ OBJECTS = obj/ts_board.o obj/ts_game.o obj/ts_loop.o obj/ts_piece.o obj/util.o
 
 bin/ncetris: ${OBJECTS} obj/ncurses/ui.o obj/ncurses/main.o
 	${DIR_GUARD}
-	${CC} ${LFLAGS} $^ -o $@
+	${CC} $^ -o $@ ${LFLAGS}
 
 test/test: ${OBJECTS} test/test.c
-	${CC} ${INC} ${LFLAGS} -UNDEBUG $^ -o $@
+	${CC} ${INC} -UNDEBUG $^ -o $@ ${LFLAGS}
 
 obj/ncurses/%.o: src/ncurses/%.c src/ncurses/%.c
 	${DIR_GUARD}

@@ -41,6 +41,4 @@ int main()
   ts_Game_destroy(game);
   ts_GameLoop_destroy(loop);
   ts_ui_destroy(ui);
-
-  printf(result);
 }
